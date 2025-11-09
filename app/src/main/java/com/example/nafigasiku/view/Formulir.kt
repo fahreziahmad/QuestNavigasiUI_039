@@ -1,7 +1,7 @@
-package com.example.navigasiku.view
+// 1. NAMA PACKAGE SUDAH DIGANTI
+package com.example.nafigasiku.view
 
-import android.widget.Button
-import android.widget.RadioButton
+// 2. IMPORT YANG DIPERLUKAN DITAMBAHKAN
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
@@ -20,7 +18,12 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue // <-- Import baru
+import androidx.compose.runtime.mutableStateOf // <-- Import baru
+import androidx.compose.runtime.remember // <-- Import baru
+import androidx.compose.runtime.setValue // <-- Import baru
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,73 +36,71 @@ import com.example.nafigasiku.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormIsian(
-    jenisK: List<String> = listOf("Laki-laki", "Perempuan"),
-    OnSubmitBtnClick: () -> Unit
-) {
-    Scaffold(modifier = Modifier,
-        topBar = {
+    jenisK:List<String> = listOf("Laki-laki","Perempuan"),
+    OnSubmitBtnClick : () -> Unit
+){
+    // 3. MENAMBAHKAN STATE UNTUK MENYIMPAN PILIHAN RADIO BUTTON
+    var selectedJenisK by remember { mutableStateOf("") }
+
+    Scaffold (modifier=Modifier,
+        topBar={
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.home), color = Color.White)},
+                title = {Text(text= stringResource(id= R.string.home), color = Color.White)},
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = colorResource(id = R.color.teal_700))
-            )
-        }
-    ) { isiRuang ->
-        Column(
-            modifier = Modifier.padding(paddingValues = isiRuang),
+            )   }
+    ){ isiRuang ->
+        Column(modifier = Modifier.padding(paddingValues = isiRuang),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            horizontalAlignment = Alignment.CenterHorizontally) {
             OutlinedTextField(
-                value = "",
+                value = "", // Nanti ini juga perlu state, sama seperti RadioButton
                 singleLine = true,
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .width(width = 250.dp),
-                label = { Text(text = "Nama Lengkap") },
+                label = {Text(text = "Nama Lengkap")},
                 onValueChange = {},
             )
-
             HorizontalDivider(modifier = Modifier
-                    .padding(all = 20.dp)
-                    .width(width = 250.dp), thickness = 1.dp, color = Color.Red)
-
-
-            Row {
-                jenisK.forEach {
-                    item ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                .padding(all = 20.dp)
+                .width(width = 250.dp),
+                // 4. PERBAIKAN THICKNESS (dari 'Thickness' menjadi '1.dp')
+                thickness = 1.dp,
+                color = Color.Red
+            )
+            Row{
+                // 5. PERBAIKAN LOGIKA RADIO BUTTON
+                jenisK.forEach { item ->
+                    Row(verticalAlignment = Alignment.CenterVertically){
                         RadioButton(
-                            selected = false,
-                            onClick = { item }
+                            selected = (selectedJenisK == item), // true jika item ini yang dipilih
+                            onClick = { selectedJenisK = item } // update state saat diklik
                         )
                         Text(text = item)
                     }
                 }
             }
-
             HorizontalDivider(modifier = Modifier
                 .padding(all = 20.dp)
                 .width(width = 250.dp),
                 thickness = 1.dp,
                 color = Color.Red
             )
-
             OutlinedTextField(
-                value = "",
+                value = "", // Nanti ini juga perlu state
                 singleLine = true,
                 modifier = Modifier
                     .width(width = 250.dp),
-                label = { Text(text = "Alamat") },
+                label = {Text(text = "Alamat")},
                 onValueChange = {},
             )
-
             Spacer(modifier = Modifier.height(height = 30.dp))
             Button(
                 modifier = Modifier.fillMaxWidth(fraction = 1f)
                     .padding(all = 25.dp),
                 onClick = OnSubmitBtnClick
-            ) {
+            ){
                 Text(text = stringResource(id = R.string.submit))
             }
         }
